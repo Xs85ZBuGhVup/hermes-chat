@@ -19,14 +19,14 @@
 --btn-text:var(--tg-theme-button-text-color,#fff);
 --green:#10b981;--red:#ef4444;
 }
-html,body{height:100%;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);overflow:hidden}
+html,body{height:100%;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);overflow:hidden;-webkit-tap-highlight-color:transparent}
 
 .settings-page{position:fixed;inset:0;background:var(--bg);z-index:100;display:none;flex-direction:column}
 .settings-page.active{display:flex}
 .settings-header{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--border);flex-shrink:0}
 .settings-back{width:36px;height:36px;border:none;background:var(--bg3);border-radius:50%;color:var(--text);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center}
 .settings-title{font-size:17px;font-weight:700}
-.settings-body{flex:1;overflow-y:auto;padding:16px}
+.settings-body{flex:1;overflow-y:auto;padding:16px;padding-bottom:40px}
 .settings-body label{display:block;font-size:13px;color:var(--text2);margin-bottom:6px;margin-top:16px}
 .settings-body label:first-child{margin-top:0}
 .settings-body input,.settings-body select,.settings-body textarea{width:100%;padding:12px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:14px;direction:ltr;text-align:left;outline:none;transition:border .2s}
@@ -34,8 +34,10 @@ html,body{height:100%;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
 .settings-body textarea{direction:rtl;text-align:right;resize:vertical;min-height:60px;font-family:inherit}
 .hint{font-size:11px;color:var(--text3);margin-top:4px}
 .save-btn{width:100%;padding:14px;margin-top:20px;border:none;border-radius:12px;background:var(--accent);color:var(--btn-text);font-size:15px;font-weight:600;cursor:pointer}
+.save-btn:active{opacity:.8}
 .toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--accent);color:var(--btn-text);padding:10px 20px;border-radius:12px;font-size:13px;z-index:2000;opacity:0;transition:opacity .3s;pointer-events:none}
 .toast.show{opacity:1}
+.toast.error{background:var(--red)}
 
 .app{display:flex;flex-direction:column;height:100dvh;height:100vh}
 
@@ -54,11 +56,13 @@ html,body{height:100%;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
 .messages::-webkit-scrollbar{width:3px}
 .messages::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
 
-.msg{max-width:82%;padding:10px 14px;font-size:14px;line-height:1.7;word-wrap:break-word;white-space:pre-wrap}
+.msg{max-width:82%;padding:10px 14px;font-size:14px;line-height:1.7;word-wrap:break-word;white-space:pre-wrap;animation:fadeIn .2s}
 .msg.user{background:var(--accent);color:var(--btn-text);border-radius:16px 16px 4px 16px;align-self:flex-start;margin-bottom:2px}
 .msg.bot{background:var(--bg3);color:var(--text);border-radius:16px 16px 16px 4px;border:1px solid var(--border);align-self:flex-end;margin-bottom:2px}
+.msg.error-msg{background:rgba(239,68,68,.15);border-color:var(--red);color:var(--red)}
 .msg time{display:block;font-size:10px;color:rgba(255,255,255,.5);margin-top:4px;text-align:left}
 .msg.bot time{color:var(--text3)}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 
 .welcome{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;text-align:center;padding:32px;gap:16px}
 .welcome-icon{font-size:64px;animation:float 3s ease-in-out infinite}
@@ -102,14 +106,14 @@ html,body{height:100%;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
     <div class="settings-title">⚙️ تنظیمات</div>
   </div>
   <div class="settings-body">
-    <label>کلید API گوگل</label>
+    <label>کلید API گوگل (Gemini)</label>
     <input type="password" id="apiKey" placeholder="AIza...">
-    <div class="hint">از https://aistudio.google.com/apikey بگیر</div>
+    <div class="hint">از aistudio.google.com/apikey بگیر (رایگان)</div>
 
     <label>پرامپت سیستم</label>
-    <textarea id="systemPrompt" rows="3">تو هرمس هستی، یه دستیار هوش مصنوعی مهربان و باهوش. به فارسی جواب بده.</textarea>
+    <textarea id="systemPrompt" rows="4">تو هرمس هستی، یه دستیار هوش مصنوعی مهربان و باهوش. به فارسی جواب بده و کمکی باش.</textarea>
 
-    <button class="save-btn" onclick="saveSettings()">ذخیره</button>
+    <button class="save-btn" onclick="saveSettings()">ذخیره ✅</button>
   </div>
 </div>
 
@@ -120,7 +124,7 @@ html,body{height:100%;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
     <div class="header-avatar">🤖</div>
     <div class="header-info">
       <div class="header-name">هرمس</div>
-      <div class="header-status">آنلاین</div>
+      <div class="header-status" id="statusText">آنلاین</div>
     </div>
     <div class="header-actions">
       <button class="header-btn" onclick="clearChat()">🗑️</button>
@@ -135,8 +139,9 @@ html,body{height:100%;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
       <p>هر سوالی داری بپرس 👇</p>
       <div class="suggestions">
         <div class="suggestion" onclick="sendSuggestion('سلام! حالت چطوره؟')">سلام! 👋</div>
-        <div class="suggestion" onclick="sendSuggestion('یه جک بگو')">یه جک بگو 😂</div>
+        <div class="suggestion" onclick="sendSuggestion('یه جک بگو')">یه جک 😂</div>
         <div class="suggestion" onclick="sendSuggestion('درباره خودت بگو')">درباره تو 🤔</div>
+        <div class="suggestion" onclick="sendSuggestion('یه شعر فارسی بگو')">شعر 📝</div>
       </div>
     </div>
   </div>
@@ -153,29 +158,46 @@ html,body{height:100%;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
 
 <script>
 const tg = window.Telegram?.WebApp;
-if (tg) { tg.ready(); tg.expand(); tg.setHeaderColor('secondary_bg_color'); tg.setBackgroundColor('bg_color'); }
+if (tg) {
+  tg.ready();
+  tg.expand();
+  tg.setHeaderColor('secondary_bg_color');
+  tg.setBackgroundColor('bg_color');
+  if (tg.initDataUnsafe?.user?.first_name) {
+    document.querySelector('.welcome p').textContent = tg.initDataUnsafe.user.first_name + ' جان، هر سوالی داری بپرس 👇';
+  }
+}
 
 let messages = JSON.parse(localStorage.getItem('hm-msgs') || '[]');
 let settings = JSON.parse(localStorage.getItem('hm-cfg') || '{}');
+let isGenerating = false;
 
 document.addEventListener('DOMContentLoaded', () => {
-  loadSettings(); renderMessages();
-  document.getElementById('input').addEventListener('input', function() {
-    document.getElementById('sendBtn').disabled = !this.value.trim();
+  loadSettings();
+  renderMessages();
+  const input = document.getElementById('input');
+  input.addEventListener('input', function() {
+    document.getElementById('sendBtn').disabled = !this.value.trim() || isGenerating;
   });
+  // Check if API key is set
+  if (!settings.apiKey) {
+    setTimeout(() => openSettings(), 500);
+  }
 });
 
 function loadSettings() {
   document.getElementById('apiKey').value = settings.apiKey || '';
-  document.getElementById('systemPrompt').value = settings.systemPrompt || 'تو هرمس هستی، یه دستیار هوش مصنوعی مهربان و باهوش. به فارسی جواب بده.';
+  document.getElementById('systemPrompt').value = settings.systemPrompt || 'تو هرمس هستی، یه دستیار هوش مصنوعی مهربان و باهوش. به فارسی جواب بده و کمکی باش.';
 }
 
 function openSettings() { document.getElementById('settingsPage').classList.add('active'); }
 function closeSettings() { document.getElementById('settingsPage').classList.remove('active'); }
 
 function saveSettings() {
+  const key = document.getElementById('apiKey').value.trim();
+  if (!key) { showToast('کلید API رو وارد کن!', true); return; }
   settings = {
-    apiKey: document.getElementById('apiKey').value,
+    apiKey: key,
     systemPrompt: document.getElementById('systemPrompt').value,
   };
   localStorage.setItem('hm-cfg', JSON.stringify(settings));
@@ -183,10 +205,13 @@ function saveSettings() {
   showToast('ذخیره شد ✅');
 }
 
-function showToast(msg) {
+function showToast(msg, isError) {
   const t = document.getElementById('toast');
-  t.textContent = msg; t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2000);
+  t.textContent = msg;
+  t.className = 'toast show' + (isError ? ' error' : '');
+  setTimeout(() => t.className = 'toast', 2500);
+  if (tg && !isError) tg.HapticFeedback.notificationOccurred('success');
+  if (tg && isError) tg.HapticFeedback.notificationOccurred('error');
 }
 
 function getNow() { return new Date().toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' }); }
@@ -198,7 +223,7 @@ function renderMessages() {
   welcome.style.display = 'none'; el.innerHTML = '';
   messages.forEach((msg) => {
     const bubble = document.createElement('div');
-    bubble.className = `msg ${msg.role}`;
+    bubble.className = `msg ${msg.role}` + (msg.isError ? ' error-msg' : '');
     bubble.innerHTML = formatText(msg.content);
     if (msg.time) { const time = document.createElement('time'); time.textContent = msg.time; bubble.appendChild(time); }
     el.appendChild(bubble);
@@ -220,8 +245,9 @@ function formatText(text) {
 function sendMessage() {
   const input = document.getElementById('input');
   const text = input.value.trim();
-  if (!text) return;
-  if (!settings.apiKey) { openSettings(); showToast('کلید API رو وارد کن! ⚙️'); return; }
+  if (!text || isGenerating) return;
+  if (!settings.apiKey) { openSettings(); showToast('کلید API رو وارد کن!', true); return; }
+
   document.getElementById('welcome').style.display = 'none';
   messages.push({ role: 'user', content: text, time: getNow() });
   localStorage.setItem('hm-msgs', JSON.stringify(messages));
@@ -238,6 +264,7 @@ function sendSuggestion(text) {
 }
 
 function showTyping() {
+  isGenerating = true;
   const el = document.getElementById('messages');
   const typing = document.createElement('div');
   typing.className = 'typing'; typing.id = 'typing';
@@ -245,22 +272,24 @@ function showTyping() {
   el.appendChild(typing); el.scrollTop = el.scrollHeight;
 }
 
-function hideTyping() { const t = document.getElementById('typing'); if (t) t.remove(); }
+function hideTyping() {
+  isGenerating = false;
+  document.getElementById('sendBtn').disabled = !document.getElementById('input').value.trim();
+  const t = document.getElementById('typing'); if (t) t.remove();
+}
 
 async function callGemini(userText) {
   const apiKey = settings.apiKey;
   const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
 
-  // Build conversation history for Gemini format
   const contents = [];
-  const sysPrompt = settings.systemPrompt || 'تو هرمس هستی. به فارسی جواب بده.';
-
-  // Add history
   messages.forEach(m => {
-    contents.push({
-      role: m.role === 'user' ? 'user' : 'model',
-      parts: [{ text: m.content }]
-    });
+    if (m.role === 'user' || m.role === 'bot') {
+      contents.push({
+        role: m.role === 'user' ? 'user' : 'model',
+        parts: [{ text: m.content }]
+      });
+    }
   });
 
   try {
@@ -268,32 +297,36 @@ async function callGemini(userText) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        systemInstruction: { parts: [{ text: sysPrompt }] },
+        systemInstruction: { parts: [{ text: settings.systemPrompt || 'تو هرمس هستی. به فارسی جواب بده.' }] },
         contents: contents,
         generationConfig: { temperature: 0.7, maxOutputTokens: 2048 }
       }),
     });
 
     const data = await res.json();
+    if (data.error) throw new Error(data.error.message || 'خطای نامشخص');
 
-    if (data.error) throw new Error(data.error.message || 'خطا');
-
-    const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || 'جوابی دریافت نشد 🤔';
+    const reply = data.candidates?.[0]?.content?.parts?.[0]?.text;
+    if (!reply) throw new Error('پاسخ خالی دریافت شد');
 
     hideTyping();
     messages.push({ role: 'bot', content: reply, time: getNow() });
     localStorage.setItem('hm-msgs', JSON.stringify(messages));
     renderMessages();
+    if (tg) tg.HapticFeedback.notificationOccurred('success');
 
   } catch (err) {
     hideTyping();
-    messages.push({ role: 'bot', content: `❌ خطا: ${err.message}`, time: getNow() });
+    const errMsg = err.message.includes('API key not valid') ? 'کلید API نامعتبره!' : err.message;
+    messages.push({ role: 'bot', content: `❌ ${errMsg}`, time: getNow(), isError: true });
     renderMessages();
+    if (tg) tg.HapticFeedback.notificationOccurred('error');
   }
 }
 
 function clearChat() {
   messages = []; localStorage.removeItem('hm-msgs'); renderMessages();
+  showToast('چت پاک شد 🗑️');
 }
 
 function handleKey(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } }
