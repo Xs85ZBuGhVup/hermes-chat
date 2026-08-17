@@ -28,10 +28,10 @@ html,body{height:100%;width:100%;font-family:system-ui,-apple-system,sans-serif;
 .toast.show{opacity:1}
 .toast.err{background:#ef4444}
 
-/* Main layout - fixed positioning */
+/* Main layout */
 .main{position:fixed;top:0;left:0;right:0;bottom:0;display:flex;flex-direction:column}
 
-/* Header - fixed top */
+/* Header */
 .hd{background:#12121a;border-bottom:1px solid #1e293b;padding:12px 16px;display:flex;align-items:center;gap:12px;flex-shrink:0;z-index:5}
 .ha{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#10b981);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
 .hi{flex:1}
@@ -42,11 +42,10 @@ html,body{height:100%;width:100%;font-family:system-ui,-apple-system,sans-serif;
 .hb{width:38px;height:38px;border:none;background:#1a1a2e;border-radius:50%;color:#94a3b8;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center}
 @keyframes pu{0%,100%{opacity:1}50%{opacity:.4}}
 
-/* Messages area - scrollable */
+/* Messages */
 .msgs{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:4px;-webkit-overflow-scrolling:touch}
 .msgs::-webkit-scrollbar{width:3px}
 .msgs::-webkit-scrollbar-thumb{background:#1e293b;border-radius:3px}
-
 .m{max-width:82%;padding:10px 14px;font-size:14px;line-height:1.7;word-wrap:break-word;animation:fi .2s}
 .mu{background:#7c3aed;color:#fff;border-radius:16px 16px 4px 16px;align-self:flex-start}
 .mb{background:#1a1a2e;color:#e2e8f0;border-radius:16px 16px 16px 4px;border:1px solid #1e293b;align-self:flex-end}
@@ -72,7 +71,7 @@ html,body{height:100%;width:100%;font-family:system-ui,-apple-system,sans-serif;
 .td:nth-child(3){animation-delay:.4s}
 @keyframes ty{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-6px);opacity:1}}
 
-/* Input area - FIXED BOTTOM */
+/* Input area */
 .ia{background:#12121a;border-top:1px solid #1e293b;padding:10px 12px;display:flex;gap:8px;align-items:center;flex-shrink:0;min-height:64px}
 .iw{flex:1;display:flex;align-items:center;background:#1a1a2e;border:1px solid #1e293b;border-radius:24px;padding:0 16px;min-height:48px}
 .iw textarea{flex:1;background:none;border:none;color:#e2e8f0;font-size:16px;line-height:1.5;padding:12px 0;resize:none;outline:none;max-height:100px;font-family:inherit}
@@ -82,7 +81,6 @@ html,body{height:100%;width:100%;font-family:system-ui,-apple-system,sans-serif;
 .snd:disabled{opacity:.3;cursor:not-allowed;transform:none}
 .snd svg{width:22px;height:22px}
 
-/* Message formatting */
 .mb code{background:rgba(124,58,237,.2);padding:1px 5px;border-radius:4px;font-size:13px;font-family:monospace}
 .mb pre{background:rgba(0,0,0,.3);padding:10px;border-radius:8px;overflow-x:auto;margin:6px 0;font-size:12px}
 .mb pre code{background:none;padding:0}
@@ -140,7 +138,7 @@ html,body{height:100%;width:100%;font-family:system-ui,-apple-system,sans-serif;
     <div class="iw">
       <textarea id="in" rows="1" placeholder="Type your message..." oninput="ar(this)" onkeydown="hk(event)"></textarea>
     </div>
-    <button class="snd" id="sb2" onclick="sm()" disabled>
+    <button class="snd" id="sb2" onclick="sm()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
     </button>
   </div>
@@ -155,15 +153,19 @@ if(u)document.getElementById('wt').textContent=u+', ask anything!'}
 var GM='gemini-flash-latest';
 var ml=JSON.parse(localStorage.getItem('hm-m')||'[]');
 var st=JSON.parse(localStorage.getItem('hm-s')||'{}');
-var ig=false;
+var isBusy=false;
 
 document.addEventListener('DOMContentLoaded',function(){
-  ld();rm();
-  document.getElementById('in').addEventListener('input',function(){
-    document.getElementById('sb2').disabled=!this.value.trim()||ig;
-  });
+  ld();rm();en();
+  document.getElementById('in').addEventListener('input',function(){en()});
+  document.getElementById('in').addEventListener('keyup',function(){en()});
   if(!st.ak)setTimeout(os,500);
 });
+
+function en(){
+  var v=document.getElementById('in').value.trim();
+  document.getElementById('sb2').disabled=(!v||isBusy);
+}
 
 function ld(){
   document.getElementById('ak').value=st.ak||'';
@@ -193,7 +195,7 @@ function gn(){return new Date().toLocaleTimeString('fa-IR',{hour:'2-digit',minut
 function rm(){
   var el=document.getElementById('ml');
   var w=document.getElementById('wl');
-  if(ml.length===0){w.style.display='flex';el.innerHTML='';el.appendChild(w);return}
+  if(ml.length===0){w.style.display='flex';el.innerHTML='';el.appendChild(w);en();return}
   w.style.display='none';el.innerHTML='';
   ml.forEach(function(m){
     var b=document.createElement('div');
@@ -219,24 +221,26 @@ function ft(t){
 function sm(){
   var i=document.getElementById('in');
   var t=i.value.trim();
-  if(!t||ig)return;
+  if(!t||isBusy)return;
   if(!st.ak){os();st2('Set API key first!',1);return}
+  
+  isBusy=true;
+  en();
   document.getElementById('wl').style.display='none';
   ml.push({r:'user',c:t,t:gn()});
   localStorage.setItem('hm-m',JSON.stringify(ml));
-  rm();i.value='';i.style.height='auto';
-  document.getElementById('sb2').disabled=true;
+  rm();
+  i.value='';i.style.height='auto';
   sty();cg(t);
 }
 
 function ss2(t){
   document.getElementById('in').value=t;
-  document.getElementById('sb2').disabled=false;
+  en();
   sm();
 }
 
 function sty(){
-  ig=true;
   var el=document.getElementById('ml');
   var d=document.createElement('div');
   d.className='typ';d.id='ty';
@@ -244,10 +248,12 @@ function sty(){
   el.appendChild(d);el.scrollTop=el.scrollHeight;
 }
 
-function hty(){
-  ig=false;
-  document.getElementById('sb2').disabled=!document.getElementById('in').value.trim();
+function done(){
+  isBusy=false;
+  document.getElementById('ty');
   var t=document.getElementById('ty');if(t)t.remove();
+  en();
+  document.getElementById('in').focus();
 }
 
 function cg(ut){
@@ -271,14 +277,14 @@ function cg(ut){
     if(d.error)throw new Error(d.error.message||'Unknown error');
     var rp=d.candidates&&d.candidates[0]&&d.candidates[0].content&&d.candidates[0].content.parts&&d.candidates[0].content.parts[0]&&d.candidates[0].content.parts[0].text;
     if(!rp)throw new Error('Empty response');
-    hty();
+    done();
     ml.push({r:'bot',c:rp,t:gn()});
     localStorage.setItem('hm-m',JSON.stringify(ml));
     rm();
     if(tg)try{tg.HapticFeedback.notificationOccurred('success')}catch(x){}
   })
   .catch(function(e){
-    hty();
+    done();
     var em=e.message;
     if(em.indexOf('API key')>=0)em='Invalid API key!';
     else if(em.indexOf('fetch')>=0||em.indexOf('Failed')>=0)em='Connection error';
