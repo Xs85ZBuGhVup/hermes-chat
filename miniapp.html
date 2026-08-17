@@ -102,18 +102,18 @@ html,body{height:100%;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
 
 <div class="settings-page" id="settingsPage">
   <div class="settings-header">
-    <button class="settings-back" onclick="closeSettings()">→</button>
-    <div class="settings-title">⚙️ تنظیمات</div>
+    <button class="settings-back" onclick="closeSettings()">&#8592;</button>
+    <div class="settings-title">&#9881;&#65039; &#1578;&#1593;&#1605;&#1740;&#1606;&#1575;&#1578;</div>
   </div>
   <div class="settings-body">
-    <label>کلید API گوگل (Gemini)</label>
+    <label>&#1705;&#1604;&#1740;&#1583; API &#1711;&#1608;&#1711;&#1604; (Gemini)</label>
     <input type="password" id="apiKey" placeholder="AQ.Ab8...">
-    <div class="hint">از aistudio.google.com/apikey بگیر (رایگان)</div>
+    <div class="hint">az aistudio.google.com/apikey begir (raygan)</div>
 
-    <label>پرامپت سیستم</label>
-    <textarea id="systemPrompt" rows="4">تو هرمس هستی، یه دستیار هوش مصنوعی مهربان و باهوش. به فارسی جواب بده و کمکی باش.</textarea>
+    <label>&#1662;&#1585;&#1575;&#1605;&#1662;&#1578; &#1587;&#1740;&#1587;&#1578;&#1605;</label>
+    <textarea id="systemPrompt" rows="4"></textarea>
 
-    <button class="save-btn" onclick="saveSettings()">ذخیره ✅</button>
+    <button class="save-btn" onclick="saveSettings()">&#1584;&#1582;&#1740;&#1585;&#1607; &#10004;&#65039;</button>
   </div>
 </div>
 
@@ -121,34 +121,34 @@ html,body{height:100%;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
 
 <div class="app">
   <div class="header">
-    <div class="header-avatar">🤖</div>
+    <div class="header-avatar">&#129302;</div>
     <div class="header-info">
-      <div class="header-name">هرمس</div>
-      <div class="header-status" id="statusText">آنلاین</div>
+      <div class="header-name">&#1607;&#1585;&#1605;&#1587;</div>
+      <div class="header-status" id="statusText">&#1570;&#1606;&#1604;&#1575;&#1740;&#1606;</div>
     </div>
     <div class="header-actions">
-      <button class="header-btn" onclick="clearChat()">🗑️</button>
-      <button class="header-btn" onclick="openSettings()">⚙️</button>
+      <button class="header-btn" onclick="clearChat()">&#128465;&#65039;</button>
+      <button class="header-btn" onclick="openSettings()">&#9881;&#65039;</button>
     </div>
   </div>
 
   <div class="messages" id="messages">
     <div class="welcome" id="welcome">
-      <div class="welcome-icon">🤖</div>
-      <h2>سلام! من هرمس‌ام</h2>
-      <p id="welcomeText">هر سوالی داری بپرس 👇</p>
+      <div class="welcome-icon">&#129302;</div>
+      <h2>&#1587;&#1604;&#1575;&#1605;! &#1605;&#1606; &#1607;&#1585;&#1605;&#1587;&#8204;&#1575;&#1605;</h2>
+      <p id="welcomeText">&#1607;&#1585; &#1587;&#1608;&#1575;&#1604;&#1740; &#1583;&#1575;&#1585;&#1740; &#1576;&#1662;&#1587;&#1607; &#128075;</p>
       <div class="suggestions">
-        <div class="suggestion" onclick="sendSuggestion('سلام! حالت چطوره؟')">سلام! 👋</div>
-        <div class="suggestion" onclick="sendSuggestion('یه جک بگو')">یه جک 😂</div>
-        <div class="suggestion" onclick="sendSuggestion('درباره خودت بگو')">درباره تو 🤔</div>
-        <div class="suggestion" onclick="sendSuggestion('یه شعر فارسی بگو')">شعر 📝</div>
+        <div class="suggestion" onclick="sendSuggestion('hello')">&#1587;&#1604;&#1575;&#1605; &#128075;</div>
+        <div class="suggestion" onclick="sendSuggestion('tell me a joke')">&#1740;&#1607; &#1580;&#1705; &#128514;</div>
+        <div class="suggestion" onclick="sendSuggestion('who are you?')">&#1583;&#1585;&#1576;&#1575;&#1585;&#1607; &#1578;&#1608; &#129300;</div>
+        <div class="suggestion" onclick="sendSuggestion('write a poem')">&#1588;&#1593;&#1585; &#128221;</div>
       </div>
     </div>
   </div>
 
   <div class="input-area">
     <div class="input-wrap">
-      <textarea id="input" rows="1" placeholder="پیامتو بنویس..." oninput="autoResize(this)" onkeydown="handleKey(event)"></textarea>
+      <textarea id="input" rows="1" placeholder="type..." oninput="autoResize(this)" onkeydown="handleKey(event)"></textarea>
     </div>
     <button class="send-btn" id="sendBtn" onclick="sendMessage()" disabled>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
@@ -157,67 +157,69 @@ html,body{height:100%;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
 </div>
 
 <script>
-const tg = window.Telegram?.WebApp;
+var tg = window.Telegram && window.Telegram.WebApp;
 if (tg) {
   tg.ready();
   tg.expand();
   tg.setHeaderColor('secondary_bg_color');
   tg.setBackgroundColor('bg_color');
-  const name = tg.initDataUnsafe?.user?.first_name;
-  if (name) document.getElementById('welcomeText').textContent = name + ' جان، هر سوالی داری بپرس 👇';
+  var uname = tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.first_name;
+  if (uname) document.getElementById('welcomeText').textContent = uname + ' hi, ask anything!';
 }
 
-const MODEL = 'gemini-flash-latest';
-let messages = JSON.parse(localStorage.getItem('hm-msgs') || '[]');
-let settings = JSON.parse(localStorage.getItem('hm-cfg') || '{}');
-let isGenerating = false;
+var GEMINI_MODEL = 'gemini-flash-latest';
+var messages = JSON.parse(localStorage.getItem('hm-msgs') || '[]');
+var settings = JSON.parse(localStorage.getItem('hm-cfg') || '{}');
+var isGenerating = false;
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', function() {
   loadSettings();
   renderMessages();
   document.getElementById('input').addEventListener('input', function() {
     document.getElementById('sendBtn').disabled = !this.value.trim() || isGenerating;
   });
-  if (!settings.apiKey) setTimeout(() => openSettings(), 500);
+  document.getElementById('systemPrompt').value = settings.systemPrompt || 'You are Hermes, a kind and smart AI assistant. Answer in the same language as the user.';
+  if (!settings.apiKey) setTimeout(openSettings, 500);
 });
 
 function loadSettings() {
   document.getElementById('apiKey').value = settings.apiKey || '';
-  document.getElementById('systemPrompt').value = settings.systemPrompt || 'تو هرمس هستی، یه دستیار هوش مصنوعی مهربان و باهوش. به فارسی جواب بده و کمکی باش.';
+  document.getElementById('systemPrompt').value = settings.systemPrompt || 'You are Hermes, a kind and smart AI assistant. Answer in the same language as the user.';
 }
 
 function openSettings() { document.getElementById('settingsPage').classList.add('active'); }
 function closeSettings() { document.getElementById('settingsPage').classList.remove('active'); }
 
 function saveSettings() {
-  const key = document.getElementById('apiKey').value.trim();
-  if (!key) { showToast('کلید API رو وارد کن!', true); return; }
-  settings = { apiKey: key, systemPrompt: document.getElementById('systemPrompt').value };
+  var k = document.getElementById('apiKey').value.trim();
+  if (!k) { showToast('Enter API key!', true); return; }
+  settings.apiKey = k;
+  settings.systemPrompt = document.getElementById('systemPrompt').value;
   localStorage.setItem('hm-cfg', JSON.stringify(settings));
   closeSettings();
-  showToast('ذخیره شد ✅');
+  showToast('Saved!');
 }
 
-function showToast(msg, isError) {
-  const t = document.getElementById('toast');
+function showToast(msg, isErr) {
+  var t = document.getElementById('toast');
   t.textContent = msg;
-  t.className = 'toast show' + (isError ? ' error' : '');
-  setTimeout(() => t.className = 'toast', 2500);
-  if (tg) tg.HapticFeedback.notificationOccurred(isError ? 'error' : 'success');
+  t.className = 'toast show' + (isErr ? ' error' : '');
+  setTimeout(function() { t.className = 'toast'; }, 2500);
+  if (tg) tg.HapticFeedback.notificationOccurred(isErr ? 'error' : 'success');
 }
 
 function getNow() { return new Date().toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' }); }
 
 function renderMessages() {
-  const el = document.getElementById('messages');
-  const welcome = document.getElementById('welcome');
+  var el = document.getElementById('messages');
+  var welcome = document.getElementById('welcome');
   if (messages.length === 0) { welcome.style.display = 'flex'; el.innerHTML = ''; el.appendChild(welcome); return; }
   welcome.style.display = 'none'; el.innerHTML = '';
-  messages.forEach((msg) => {
-    const bubble = document.createElement('div');
+  messages.forEach(function(msg) {
+    var bubble = document.createElement('div');
     bubble.className = 'msg ' + msg.role + (msg.isError ? ' error-msg' : '');
     bubble.innerHTML = formatText(msg.content);
-    if (msg.time) { const time = document.createElement('time'); time.textContent = msg.time; bubble.appendChild(time); }
+    if (msg.time) { var time = document.createElement('time'); time.textContent = msg.time; bubble.appendChild(time); }
     el.appendChild(bubble);
   });
   el.scrollTop = el.scrollHeight;
@@ -230,23 +232,25 @@ function formatText(text) {
     .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
     .replace(/\*(.+?)\*/g, '<em>$1</em>')
     .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>')
-    .replace(/^- (.+)$/gm, '• $1')
+    .replace(/^- (.+)$/gm, '  $1')
     .replace(/\n/g, '<br>');
 }
 
 function sendMessage() {
-  const input = document.getElementById('input');
-  const text = input.value.trim();
+  var input = document.getElementById('input');
+  var text = input.value.trim();
   if (!text || isGenerating) return;
-  if (!settings.apiKey) { openSettings(); showToast('کلید API رو وارد کن!', true); return; }
+  if (!settings.apiKey) { openSettings(); showToast('Enter API key first!', true); return; }
 
   document.getElementById('welcome').style.display = 'none';
   messages.push({ role: 'user', content: text, time: getNow() });
   localStorage.setItem('hm-msgs', JSON.stringify(messages));
   renderMessages();
-  input.value = ''; input.style.height = 'auto';
+  input.value = '';
+  input.style.height = 'auto';
   document.getElementById('sendBtn').disabled = true;
-  showTyping(); callGemini(text);
+  showTyping();
+  callGemini(text);
 }
 
 function sendSuggestion(text) {
@@ -257,66 +261,81 @@ function sendSuggestion(text) {
 
 function showTyping() {
   isGenerating = true;
-  const el = document.getElementById('messages');
-  const typing = document.createElement('div');
-  typing.className = 'typing'; typing.id = 'typing';
+  var el = document.getElementById('messages');
+  var typing = document.createElement('div');
+  typing.className = 'typing';
+  typing.id = 'typing';
   typing.innerHTML = '<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>';
-  el.appendChild(typing); el.scrollTop = el.scrollHeight;
+  el.appendChild(typing);
+  el.scrollTop = el.scrollHeight;
 }
 
 function hideTyping() {
   isGenerating = false;
   document.getElementById('sendBtn').disabled = !document.getElementById('input').value.trim();
-  const t = document.getElementById('typing'); if (t) t.remove();
+  var t = document.getElementById('typing');
+  if (t) t.remove();
 }
 
-async function callGemini(userText) {
-  const apiKey = settings.apiKey;
-  const url = 'https://generativelanguage.googleapis.com/v1beta/models/' + MODEL + ':generateContent?key=' + apiKey;
+function callGemini(userText) {
+  var apiKey = settings.apiKey;
+  var url = 'https://generativelanguage.googleapis.com/v1beta/models/' + GEMINI_MODEL + ':generateContent?key=' + apiKey;
 
-  const contents = [];
-  messages.forEach(m => {
+  var contents = [];
+  messages.forEach(function(m) {
     if (m.role === 'user' || m.role === 'bot') {
       contents.push({ role: m.role === 'user' ? 'user' : 'model', parts: [{ text: m.content }] });
     }
   });
 
-  try {
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        systemInstruction: { parts: [{ text: settings.systemPrompt || 'تو هرمس هستی. به فارسی جواب بده.' }] },
-        contents: contents,
-        generationConfig: { temperature: 0.7, maxOutputTokens: 2048 }
-      }),
-    });
+  var body = JSON.stringify({
+    systemInstruction: { parts: [{ text: settings.systemPrompt || 'You are Hermes. Answer in the user language.' }] },
+    contents: contents,
+    generationConfig: { temperature: 0.7, maxOutputTokens: 2048 }
+  });
 
-    const data = await res.json();
-    if (data.error) throw new Error(data.error.message || 'خطای نامشخص');
-    const reply = data.candidates?.[0]?.content?.parts?.[0]?.text;
-    if (!reply) throw new Error('پاسخ خالی');
+  fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: body
+  }).then(function(res) {
+    return res.json();
+  }).then(function(data) {
+    if (data.error) throw new Error(data.error.message || 'Unknown error');
+    var reply = data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts && data.candidates[0].content.parts[0] && data.candidates[0].content.parts[0].text;
+    if (!reply) throw new Error('Empty response');
 
     hideTyping();
     messages.push({ role: 'bot', content: reply, time: getNow() });
     localStorage.setItem('hm-msgs', JSON.stringify(messages));
     renderMessages();
     if (tg) tg.HapticFeedback.notificationOccurred('success');
-
-  } catch (err) {
+  }).catch(function(err) {
     hideTyping();
-    let errMsg = err.message;
-    if (errMsg.includes('API key')) errMsg = 'کلید API نامعتبره!';
-    else if (errMsg.includes('CORS') || errMsg.includes('Failed to fetch')) errMsg = 'خطای اتصال - اینترنت رو چک کن';
-    messages.push({ role: 'bot', content: '❌ ' + errMsg, time: getNow(), isError: true });
+    var errMsg = err.message;
+    if (errMsg.indexOf('API key') >= 0) errMsg = 'Invalid API key!';
+    else if (errMsg.indexOf('fetch') >= 0) errMsg = 'Connection error - check internet';
+    messages.push({ role: 'bot', content: 'Error: ' + errMsg, time: getNow(), isError: true });
     renderMessages();
     if (tg) tg.HapticFeedback.notificationOccurred('error');
-  }
+  });
 }
 
-function clearChat() { messages = []; localStorage.removeItem('hm-msgs'); renderMessages(); showToast('چت پاک شد 🗑️'); }
-function handleKey(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } }
-function autoResize(el) { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 100) + 'px'; }
+function clearChat() {
+  messages = [];
+  localStorage.removeItem('hm-msgs');
+  renderMessages();
+  showToast('Chat cleared');
+}
+
+function handleKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+}
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 100) + 'px';
+}
 </script>
 </body>
 </html>
