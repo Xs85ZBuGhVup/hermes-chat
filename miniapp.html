@@ -107,7 +107,7 @@ html,body{height:100%;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
   </div>
   <div class="settings-body">
     <label>کلید API گوگل (Gemini)</label>
-    <input type="password" id="apiKey" placeholder="AIza...">
+    <input type="password" id="apiKey" placeholder="AQ.Ab8...">
     <div class="hint">از aistudio.google.com/apikey بگیر (رایگان)</div>
 
     <label>پرامپت سیستم</label>
@@ -136,7 +136,7 @@ html,body{height:100%;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
     <div class="welcome" id="welcome">
       <div class="welcome-icon">🤖</div>
       <h2>سلام! من هرمس‌ام</h2>
-      <p>هر سوالی داری بپرس 👇</p>
+      <p id="welcomeText">هر سوالی داری بپرس 👇</p>
       <div class="suggestions">
         <div class="suggestion" onclick="sendSuggestion('سلام! حالت چطوره؟')">سلام! 👋</div>
         <div class="suggestion" onclick="sendSuggestion('یه جک بگو')">یه جک 😂</div>
@@ -163,11 +163,11 @@ if (tg) {
   tg.expand();
   tg.setHeaderColor('secondary_bg_color');
   tg.setBackgroundColor('bg_color');
-  if (tg.initDataUnsafe?.user?.first_name) {
-    document.querySelector('.welcome p').textContent = tg.initDataUnsafe.user.first_name + ' جان، هر سوالی داری بپرس 👇';
-  }
+  const name = tg.initDataUnsafe?.user?.first_name;
+  if (name) document.getElementById('welcomeText').textContent = name + ' جان، هر سوالی داری بپرس 👇';
 }
 
+const MODEL = 'gemini-flash-latest';
 let messages = JSON.parse(localStorage.getItem('hm-msgs') || '[]');
 let settings = JSON.parse(localStorage.getItem('hm-cfg') || '{}');
 let isGenerating = false;
@@ -175,14 +175,10 @@ let isGenerating = false;
 document.addEventListener('DOMContentLoaded', () => {
   loadSettings();
   renderMessages();
-  const input = document.getElementById('input');
-  input.addEventListener('input', function() {
+  document.getElementById('input').addEventListener('input', function() {
     document.getElementById('sendBtn').disabled = !this.value.trim() || isGenerating;
   });
-  // Check if API key is set
-  if (!settings.apiKey) {
-    setTimeout(() => openSettings(), 500);
-  }
+  if (!settings.apiKey) setTimeout(() => openSettings(), 500);
 });
 
 function loadSettings() {
@@ -196,10 +192,7 @@ function closeSettings() { document.getElementById('settingsPage').classList.rem
 function saveSettings() {
   const key = document.getElementById('apiKey').value.trim();
   if (!key) { showToast('کلید API رو وارد کن!', true); return; }
-  settings = {
-    apiKey: key,
-    systemPrompt: document.getElementById('systemPrompt').value,
-  };
+  settings = { apiKey: key, systemPrompt: document.getElementById('systemPrompt').value };
   localStorage.setItem('hm-cfg', JSON.stringify(settings));
   closeSettings();
   showToast('ذخیره شد ✅');
@@ -210,8 +203,7 @@ function showToast(msg, isError) {
   t.textContent = msg;
   t.className = 'toast show' + (isError ? ' error' : '');
   setTimeout(() => t.className = 'toast', 2500);
-  if (tg && !isError) tg.HapticFeedback.notificationOccurred('success');
-  if (tg && isError) tg.HapticFeedback.notificationOccurred('error');
+  if (tg) tg.HapticFeedback.notificationOccurred(isError ? 'error' : 'success');
 }
 
 function getNow() { return new Date().toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' }); }
@@ -223,7 +215,7 @@ function renderMessages() {
   welcome.style.display = 'none'; el.innerHTML = '';
   messages.forEach((msg) => {
     const bubble = document.createElement('div');
-    bubble.className = `msg ${msg.role}` + (msg.isError ? ' error-msg' : '');
+    bubble.className = 'msg ' + msg.role + (msg.isError ? ' error-msg' : '');
     bubble.innerHTML = formatText(msg.content);
     if (msg.time) { const time = document.createElement('time'); time.textContent = msg.time; bubble.appendChild(time); }
     el.appendChild(bubble);
@@ -280,15 +272,12 @@ function hideTyping() {
 
 async function callGemini(userText) {
   const apiKey = settings.apiKey;
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+  const url = 'https://generativelanguage.googleapis.com/v1beta/models/' + MODEL + ':generateContent?key=' + apiKey;
 
   const contents = [];
   messages.forEach(m => {
     if (m.role === 'user' || m.role === 'bot') {
-      contents.push({
-        role: m.role === 'user' ? 'user' : 'model',
-        parts: [{ text: m.content }]
-      });
+      contents.push({ role: m.role === 'user' ? 'user' : 'model', parts: [{ text: m.content }] });
     }
   });
 
@@ -305,9 +294,8 @@ async function callGemini(userText) {
 
     const data = await res.json();
     if (data.error) throw new Error(data.error.message || 'خطای نامشخص');
-
     const reply = data.candidates?.[0]?.content?.parts?.[0]?.text;
-    if (!reply) throw new Error('پاسخ خالی دریافت شد');
+    if (!reply) throw new Error('پاسخ خالی');
 
     hideTyping();
     messages.push({ role: 'bot', content: reply, time: getNow() });
@@ -317,18 +305,16 @@ async function callGemini(userText) {
 
   } catch (err) {
     hideTyping();
-    const errMsg = err.message.includes('API key not valid') ? 'کلید API نامعتبره!' : err.message;
-    messages.push({ role: 'bot', content: `❌ ${errMsg}`, time: getNow(), isError: true });
+    let errMsg = err.message;
+    if (errMsg.includes('API key')) errMsg = 'کلید API نامعتبره!';
+    else if (errMsg.includes('CORS') || errMsg.includes('Failed to fetch')) errMsg = 'خطای اتصال - اینترنت رو چک کن';
+    messages.push({ role: 'bot', content: '❌ ' + errMsg, time: getNow(), isError: true });
     renderMessages();
     if (tg) tg.HapticFeedback.notificationOccurred('error');
   }
 }
 
-function clearChat() {
-  messages = []; localStorage.removeItem('hm-msgs'); renderMessages();
-  showToast('چت پاک شد 🗑️');
-}
-
+function clearChat() { messages = []; localStorage.removeItem('hm-msgs'); renderMessages(); showToast('چت پاک شد 🗑️'); }
 function handleKey(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } }
 function autoResize(el) { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 100) + 'px'; }
 </script>
