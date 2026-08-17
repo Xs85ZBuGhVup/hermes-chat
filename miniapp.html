@@ -8,8 +8,6 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{height:100%;width:100%;font-family:system-ui,-apple-system,sans-serif;background:#0a0a0f;color:#e2e8f0;overflow:hidden;-webkit-tap-highlight-color:transparent}
-
-/* Settings */
 .sp{position:fixed;inset:0;background:#0a0a0f;z-index:100;display:none;flex-direction:column}
 .sp.active{display:flex}
 .sh{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid #1e293b}
@@ -22,16 +20,10 @@ html,body{height:100%;width:100%;font-family:system-ui,-apple-system,sans-serif;
 .sbody textarea{resize:vertical;min-height:60px;font-family:inherit}
 .hint{font-size:11px;color:#64748b;margin-top:4px}
 .sav{width:100%;padding:14px;margin-top:20px;border:none;border-radius:12px;background:#7c3aed;color:#fff;font-size:15px;font-weight:600;cursor:pointer}
-
-/* Toast */
 .toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:#7c3aed;color:#fff;padding:10px 20px;border-radius:12px;font-size:13px;z-index:2000;opacity:0;transition:opacity .3s;pointer-events:none}
 .toast.show{opacity:1}
 .toast.err{background:#ef4444}
-
-/* Main layout */
 .main{position:fixed;top:0;left:0;right:0;bottom:0;display:flex;flex-direction:column}
-
-/* Header */
 .hd{background:#12121a;border-bottom:1px solid #1e293b;padding:12px 16px;display:flex;align-items:center;gap:12px;flex-shrink:0;z-index:5}
 .ha{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#10b981);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
 .hi{flex:1}
@@ -41,8 +33,6 @@ html,body{height:100%;width:100%;font-family:system-ui,-apple-system,sans-serif;
 .hact{display:flex;gap:4px}
 .hb{width:38px;height:38px;border:none;background:#1a1a2e;border-radius:50%;color:#94a3b8;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center}
 @keyframes pu{0%,100%{opacity:1}50%{opacity:.4}}
-
-/* Messages */
 .msgs{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:4px;-webkit-overflow-scrolling:touch}
 .msgs::-webkit-scrollbar{width:3px}
 .msgs::-webkit-scrollbar-thumb{background:#1e293b;border-radius:3px}
@@ -53,8 +43,6 @@ html,body{height:100%;width:100%;font-family:system-ui,-apple-system,sans-serif;
 .m time{display:block;font-size:10px;color:rgba(255,255,255,.5);margin-top:4px;text-align:left}
 .mb time{color:#64748b}
 @keyframes fi{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-
-/* Welcome */
 .wel{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;text-align:center;padding:32px;gap:16px}
 .wi{font-size:64px;animation:fl 3s ease-in-out infinite}
 .wel h2{font-size:22px;background:linear-gradient(135deg,#a78bfa,#10b981);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
@@ -63,15 +51,11 @@ html,body{height:100%;width:100%;font-family:system-ui,-apple-system,sans-serif;
 .sug{padding:8px 16px;background:#1a1a2e;border:1px solid #1e293b;border-radius:20px;font-size:13px;color:#94a3b8;cursor:pointer}
 .sug:active{border-color:#7c3aed;color:#a78bfa}
 @keyframes fl{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-
-/* Typing indicator */
 .typ{display:flex;gap:4px;padding:12px 16px;align-items:center;justify-content:flex-end}
 .td{width:6px;height:6px;background:#64748b;border-radius:50%;animation:ty 1.4s infinite}
 .td:nth-child(2){animation-delay:.2s}
 .td:nth-child(3){animation-delay:.4s}
 @keyframes ty{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-6px);opacity:1}}
-
-/* Input area */
 .ia{background:#12121a;border-top:1px solid #1e293b;padding:10px 12px;display:flex;gap:8px;align-items:center;flex-shrink:0;min-height:64px}
 .iw{flex:1;display:flex;align-items:center;background:#1a1a2e;border:1px solid #1e293b;border-radius:24px;padding:0 16px;min-height:48px}
 .iw textarea{flex:1;background:none;border:none;color:#e2e8f0;font-size:16px;line-height:1.5;padding:12px 0;resize:none;outline:none;max-height:100px;font-family:inherit}
@@ -80,7 +64,6 @@ html,body{height:100%;width:100%;font-family:system-ui,-apple-system,sans-serif;
 .snd:active{transform:scale(.92)}
 .snd:disabled{opacity:.3;cursor:not-allowed;transform:none}
 .snd svg{width:22px;height:22px}
-
 .mb code{background:rgba(124,58,237,.2);padding:1px 5px;border-radius:4px;font-size:13px;font-family:monospace}
 .mb pre{background:rgba(0,0,0,.3);padding:10px;border-radius:8px;overflow-x:auto;margin:6px 0;font-size:12px}
 .mb pre code{background:none;padding:0}
@@ -91,7 +74,6 @@ html,body{height:100%;width:100%;font-family:system-ui,-apple-system,sans-serif;
 </style>
 </head>
 <body>
-
 <div class="sp" id="spp">
   <div class="sh">
     <button class="sb" onclick="cs()">&#8592;</button>
@@ -106,9 +88,7 @@ html,body{height:100%;width:100%;font-family:system-ui,-apple-system,sans-serif;
     <button class="sav" onclick="ss()">Save</button>
   </div>
 </div>
-
 <div class="toast" id="tt"></div>
-
 <div class="main">
   <div class="hd">
     <div class="ha">&#129302;</div>
@@ -139,11 +119,10 @@ html,body{height:100%;width:100%;font-family:system-ui,-apple-system,sans-serif;
       <textarea id="in" rows="1" placeholder="Type your message..." oninput="ar(this)" onkeydown="hk(event)"></textarea>
     </div>
     <button class="snd" id="sb2" onclick="sm()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
     </button>
   </div>
 </div>
-
 <script>
 var tg=window.Telegram&&window.Telegram.WebApp;
 if(tg){try{tg.ready();tg.expand();tg.setHeaderColor('secondary_bg_color');tg.setBackgroundColor('bg_color')}catch(e){}
@@ -155,46 +134,26 @@ var ml=JSON.parse(localStorage.getItem('hm-m')||'[]');
 var st=JSON.parse(localStorage.getItem('hm-s')||'{}');
 var isBusy=false;
 
-document.addEventListener('DOMContentLoaded',function(){
-  ld();rm();en();
-  document.getElementById('in').addEventListener('input',function(){en()});
-  document.getElementById('in').addEventListener('keyup',function(){en()});
-  if(!st.ak)setTimeout(os,500);
-});
+document.addEventListener('DOMContentLoaded',function(){ld();rm();en();
+document.getElementById('in').addEventListener('input',function(){en()});
+document.getElementById('in').addEventListener('keyup',function(){en()});
+if(!st.ak)setTimeout(os,500)});
 
-function en(){
-  var v=document.getElementById('in').value.trim();
-  document.getElementById('sb2').disabled=(!v||isBusy);
-}
-
-function ld(){
-  document.getElementById('ak').value=st.ak||'';
-  document.getElementById('sp2').value=st.sp||'You are Hermes, a kind and smart AI assistant. Answer in the same language as the user.';
-}
+function en(){document.getElementById('sb2').disabled=(!document.getElementById('in').value.trim()||isBusy)}
+function ld(){document.getElementById('ak').value=st.ak||'';document.getElementById('sp2').value=st.sp||'You are Hermes, a kind and smart AI assistant. Answer in the same language as the user.'}
 function os(){document.getElementById('spp').classList.add('active')}
 function cs(){document.getElementById('spp').classList.remove('active')}
+function ss(){var k=document.getElementById('ak').value.trim();if(!k){st2('Enter API key!',1);return}st.ak=k;st.sp=document.getElementById('sp2').value;localStorage.setItem('hm-s',JSON.stringify(st));cs();st2('Saved!',0)}
+function st2(m,e){var t=document.getElementById('tt');t.textContent=m;t.className='toast show'+(e?' err':'');setTimeout(function(){t.className='toast'},2500);if(tg)try{tg.HapticFeedback.notificationOccurred(e?'error':'success')}catch(x){}}
 
-function ss(){
-  var k=document.getElementById('ak').value.trim();
-  if(!k){st2('Enter API key!',1);return}
-  st.ak=k;
-  st.sp=document.getElementById('sp2').value;
-  localStorage.setItem('hm-s',JSON.stringify(st));
-  cs();st2('Saved!',0);
+function gn(){
+  var n=new Date();
+  var h=n.getHours();var m=n.getMinutes();
+  return (h<10?'0':'')+h+':'+(m<10?'0':'')+m;
 }
-
-function st2(m,e){
-  var t=document.getElementById('tt');t.textContent=m;
-  t.className='toast show'+(e?' err':'');
-  setTimeout(function(){t.className='toast'},2500);
-  if(tg)try{tg.HapticFeedback.notificationOccurred(e?'error':'success')}catch(x){}
-}
-
-function gn(){return new Date().toLocaleTimeString('fa-IR',{hour:'2-digit',minute:'2-digit'})}
 
 function rm(){
-  var el=document.getElementById('ml');
-  var w=document.getElementById('wl');
+  var el=document.getElementById('ml');var w=document.getElementById('wl');
   if(ml.length===0){w.style.display='flex';el.innerHTML='';el.appendChild(w);en();return}
   w.style.display='none';el.innerHTML='';
   ml.forEach(function(m){
@@ -202,10 +161,8 @@ function rm(){
     b.className='m '+(m.r==='user'?'mu':'mb')+(m.e?' me':'');
     b.innerHTML=ft(m.c);
     if(m.t){var ti=document.createElement('time');ti.textContent=m.t;b.appendChild(ti)}
-    el.appendChild(b);
-  });
-  el.scrollTop=el.scrollHeight;
-}
+    el.appendChild(b)});
+  el.scrollTop=el.scrollHeight}
 
 function ft(t){
   return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
@@ -214,85 +171,50 @@ function ft(t){
   .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
   .replace(/\*(.+?)\*/g,'<em>$1</em>')
   .replace(/\[([^\]]+)\]\(([^)]+)\)/g,'<a href="$2" target="_blank">$1</a>')
-  .replace(/^- (.+)$/gm,'  $1')
-  .replace(/\n/g,'<br>');
-}
+  .replace(/^- (.+)$/gm,'  $1').replace(/\n/g,'<br>')}
 
 function sm(){
-  var i=document.getElementById('in');
-  var t=i.value.trim();
+  var i=document.getElementById('in');var t=i.value.trim();
   if(!t||isBusy)return;
   if(!st.ak){os();st2('Set API key first!',1);return}
-  
-  isBusy=true;
-  en();
+  isBusy=true;en();
   document.getElementById('wl').style.display='none';
   ml.push({r:'user',c:t,t:gn()});
   localStorage.setItem('hm-m',JSON.stringify(ml));
-  rm();
-  i.value='';i.style.height='auto';
-  sty();cg(t);
-}
+  rm();i.value='';i.style.height='auto';
+  sty();cg(t)}
 
-function ss2(t){
-  document.getElementById('in').value=t;
-  en();
-  sm();
-}
-
-function sty(){
-  var el=document.getElementById('ml');
-  var d=document.createElement('div');
-  d.className='typ';d.id='ty';
-  d.innerHTML='<div class="td"></div><div class="td"></div><div class="td"></div>';
-  el.appendChild(d);el.scrollTop=el.scrollHeight;
-}
-
-function done(){
-  isBusy=false;
-  document.getElementById('ty');
-  var t=document.getElementById('ty');if(t)t.remove();
-  en();
-  document.getElementById('in').focus();
-}
+function ss2(t){document.getElementById('in').value=t;en();sm()}
+function sty(){var el=document.getElementById('ml');var d=document.createElement('div');d.className='typ';d.id='ty';d.innerHTML='<div class="td"></div><div class="td"></div><div class="td"></div>';el.appendChild(d);el.scrollTop=el.scrollHeight}
+function done(){isBusy=false;var t=document.getElementById('ty');if(t)t.remove();en();document.getElementById('in').focus()}
 
 function cg(ut){
   var k=st.ak;
   var url='https://generativelanguage.googleapis.com/v1beta/models/'+GM+':generateContent?key='+k;
   var ct=[];
-  ml.forEach(function(m){
-    if(m.r==='user'||m.r==='bot'){
-      ct.push({role:m.r==='user'?'user':'model',parts:[{text:m.c}]});
-    }
-  });
-  var bd=JSON.stringify({
-    systemInstruction:{parts:[{text:st.sp||'You are Hermes.'}]},
-    contents:ct,
-    generationConfig:{temperature:0.7,maxOutputTokens:2048}
-  });
+  ml.forEach(function(m){if(m.r==='user'||m.r==='bot'){ct.push({role:m.r==='user'?'user':'model',parts:[{text:m.c}]})}});
+  var bd=JSON.stringify({systemInstruction:{parts:[{text:st.sp||'You are Hermes.'}]},contents:ct,generationConfig:{temperature:0.7,maxOutputTokens:2048}});
 
   fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:bd})
   .then(function(r){return r.json()})
   .then(function(d){
+    console.log('API response:',JSON.stringify(d).substring(0,500));
     if(d.error)throw new Error(d.error.message||'Unknown error');
-    var rp=d.candidates&&d.candidates[0]&&d.candidates[0].content&&d.candidates[0].content.parts&&d.candidates[0].content.parts[0]&&d.candidates[0].content.parts[0].text;
-    if(!rp)throw new Error('Empty response');
-    done();
-    ml.push({r:'bot',c:rp,t:gn()});
-    localStorage.setItem('hm-m',JSON.stringify(ml));
-    rm();
-    if(tg)try{tg.HapticFeedback.notificationOccurred('success')}catch(x){}
-  })
+    var cand=d.candidates&&d.candidates[0];
+    var parts=cand&&cand.content&&cand.content.parts;
+    var rp='';
+    if(parts){for(var i=0;i<parts.length;i++){if(parts[i].text)rp+=parts[i].text}}
+    if(!rp)throw new Error('No response text');
+    done();ml.push({r:'bot',c:rp,t:gn()});
+    localStorage.setItem('hm-m',JSON.stringify(ml));rm();
+    if(tg)try{tg.HapticFeedback.notificationOccurred('success')}catch(x){}})
   .catch(function(e){
-    done();
-    var em=e.message;
+    console.error('API error:',e);
+    done();var em=e.message;
     if(em.indexOf('API key')>=0)em='Invalid API key!';
     else if(em.indexOf('fetch')>=0||em.indexOf('Failed')>=0)em='Connection error';
-    ml.push({r:'bot',c:em,t:gn(),e:true});
-    rm();
-    if(tg)try{tg.HapticFeedback.notificationOccurred('error')}catch(x){}
-  });
-}
+    ml.push({r:'bot',c:em,t:gn(),e:true});rm();
+    if(tg)try{tg.HapticFeedback.notificationOccurred('error')}catch(x){}})}
 
 function cc(){ml=[];localStorage.removeItem('hm-m');rm();st2('Chat cleared',0)}
 function hk(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sm()}}
