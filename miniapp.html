@@ -41,14 +41,26 @@ html,body{height:100%;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
 /* App */
 .app{display:flex;flex-direction:column;height:100dvh;height:100vh}
 
+/* Header */
+.header{background:var(--bg2);border-bottom:1px solid var(--border);padding:12px 16px;display:flex;align-items:center;gap:12px;flex-shrink:0}
+.header-avatar{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--green));display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.header-info{flex:1}
+.header-name{font-size:16px;font-weight:700;color:var(--text)}
+.header-status{font-size:12px;color:var(--green);display:flex;align-items:center;gap:4px}
+.header-status::before{content:'';width:6px;height:6px;background:var(--green);border-radius:50%;animation:pulse 2s infinite}
+.header-actions{display:flex;gap:4px}
+.header-btn{width:38px;height:38px;border:none;background:var(--bg3);border-radius:50%;color:var(--text2);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.header-btn:hover,.header-btn:active{background:var(--border);color:var(--text)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
 /* Messages */
 .messages{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:4px;scroll-behavior:smooth}
 .messages::-webkit-scrollbar{width:3px}
 .messages::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
 
 .msg{max-width:82%;padding:10px 14px;font-size:14px;line-height:1.7;word-wrap:break-word;white-space:pre-wrap}
-.msg.user{background:var(--accent);color:var(--btn-text);border-radius:var(--tg-theme-bubble-border-color,16px) var(--tg-theme-bubble-border-color,16px) 4px var(--tg-theme-bubble-border-color,16px);align-self:flex-start;margin-bottom:2px}
-.msg.bot{background:var(--bg3);color:var(--text);border-radius:var(--tg-theme-bubble-border-color,16px) var(--tg-theme-bubble-border-color,16px) var(--tg-theme-bubble-border-color,16px) 4px;border:1px solid var(--border);align-self:flex-end;margin-bottom:2px}
+.msg.user{background:var(--accent);color:var(--btn-text);border-radius:16px 16px 4px 16px;align-self:flex-start;margin-bottom:2px}
+.msg.bot{background:var(--bg3);color:var(--text);border-radius:16px 16px 16px 4px;border:1px solid var(--border);align-self:flex-end;margin-bottom:2px}
 .msg time{display:block;font-size:10px;color:rgba(255,255,255,.5);margin-top:4px;text-align:left}
 .msg.bot time{color:var(--text3)}
 
@@ -71,7 +83,7 @@ html,body{height:100%;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
 
 /* Input */
 .input-area{background:var(--bg2);border-top:1px solid var(--border);padding:8px 10px;display:flex;gap:8px;align-items:flex-end;flex-shrink:0}
-.input-wrap{flex:1;display:flex;align-items:flex-end;background:var(--bg3);border:1px solid var(--border);border-radius:var(--tg-theme-bubble-border-color,16px);padding:4px 8px;transition:border .2s}
+.input-wrap{flex:1;display:flex;align-items:flex-end;background:var(--bg3);border:1px solid var(--border);border-radius:16px;padding:4px 8px;transition:border .2s}
 .input-wrap:focus-within{border-color:var(--accent)}
 .input-wrap textarea{flex:1;background:none;border:none;color:var(--text);font-size:14px;line-height:1.6;padding:8px 4px;resize:none;outline:none;max-height:100px;font-family:inherit;direction:rtl}
 .input-wrap textarea::placeholder{color:var(--text3)}
@@ -80,7 +92,7 @@ html,body{height:100%;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
 .send-btn:disabled{opacity:.3;cursor:not-allowed;transform:none}
 .send-btn svg{width:20px;height:20px}
 
-/* Markdown in bot msg */
+/* Markdown */
 .msg.bot code{background:rgba(124,58,237,.2);padding:1px 5px;border-radius:4px;font-size:13px;font-family:'Fira Code',monospace}
 .msg.bot pre{background:rgba(0,0,0,.3);padding:10px;border-radius:8px;overflow-x:auto;margin:6px 0;font-size:12px}
 .msg.bot pre code{background:none;padding:0}
@@ -128,6 +140,19 @@ html,body{height:100%;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
 
 <!-- App -->
 <div class="app">
+  <!-- Header with settings button -->
+  <div class="header">
+    <div class="header-avatar">🤖</div>
+    <div class="header-info">
+      <div class="header-name">هرمس</div>
+      <div class="header-status">آنلاین</div>
+    </div>
+    <div class="header-actions">
+      <button class="header-btn" onclick="clearChat()" title="پاک کردن چت">🗑️</button>
+      <button class="header-btn" onclick="openSettings()" title="تنظیمات">⚙️</button>
+    </div>
+  </div>
+
   <div class="messages" id="messages">
     <div class="welcome" id="welcome">
       <div class="welcome-icon">🤖</div>
@@ -152,27 +177,16 @@ html,body{height:100%;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
 </div>
 
 <script>
-// Telegram WebApp
 const tg = window.Telegram?.WebApp;
-if (tg) {
-  tg.ready();
-  tg.expand();
-  tg.setHeaderColor('secondary_bg_color');
-  tg.setBackgroundColor('bg_color');
-}
+if (tg) { tg.ready(); tg.expand(); tg.setHeaderColor('secondary_bg_color'); tg.setBackgroundColor('bg_color'); }
 
-// State
 let messages = JSON.parse(localStorage.getItem('hermes-mini-messages') || '[]');
 let settings = JSON.parse(localStorage.getItem('hermes-mini-settings') || '{}');
 
-// Init
 document.addEventListener('DOMContentLoaded', () => {
-  loadSettings();
-  renderMessages();
+  loadSettings(); renderMessages();
   const input = document.getElementById('input');
-  input.addEventListener('input', () => {
-    document.getElementById('sendBtn').disabled = !input.value.trim();
-  });
+  input.addEventListener('input', () => { document.getElementById('sendBtn').disabled = !input.value.trim(); });
   document.getElementById('model').addEventListener('change', (e) => {
     document.getElementById('customModel').style.display = e.target.value === 'custom' ? 'block' : 'none';
   });
@@ -207,50 +221,30 @@ function saveSettings() {
 
 function showToast(msg) {
   const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
+  t.textContent = msg; t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 2000);
   if (tg) tg.HapticFeedback.notificationOccurred('success');
 }
 
-function getNow() {
-  return new Date().toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' });
-}
+function getNow() { return new Date().toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' }); }
 
 function renderMessages() {
   const el = document.getElementById('messages');
   const welcome = document.getElementById('welcome');
-
-  if (messages.length === 0) {
-    welcome.style.display = 'flex';
-    el.innerHTML = '';
-    el.appendChild(welcome);
-    return;
-  }
-
-  welcome.style.display = 'none';
-  el.innerHTML = '';
-
+  if (messages.length === 0) { welcome.style.display = 'flex'; el.innerHTML = ''; el.appendChild(welcome); return; }
+  welcome.style.display = 'none'; el.innerHTML = '';
   messages.forEach((msg) => {
     const bubble = document.createElement('div');
     bubble.className = `msg ${msg.role}`;
     bubble.innerHTML = formatText(msg.content);
-
-    if (msg.time) {
-      const time = document.createElement('time');
-      time.textContent = msg.time;
-      bubble.appendChild(time);
-    }
-
+    if (msg.time) { const time = document.createElement('time'); time.textContent = msg.time; bubble.appendChild(time); }
     el.appendChild(bubble);
   });
-
   el.scrollTop = el.scrollHeight;
 }
 
 function formatText(text) {
-  return text
-    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+  return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
     .replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>')
     .replace(/`([^`]+)`/g, '<code>$1</code>')
     .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
@@ -268,25 +262,14 @@ function sendMessage() {
   const input = document.getElementById('input');
   const text = input.value.trim();
   if (!text) return;
-
-  if (!settings.apiKey) {
-    openSettings();
-    showToast('تنظیمات رو کامل کن! ⚙️');
-    return;
-  }
-
+  if (!settings.apiKey) { openSettings(); showToast('تنظیمات رو کامل کن! ⚙️'); return; }
   document.getElementById('welcome').style.display = 'none';
-
   messages.push({ role: 'user', content: text, time: getNow() });
   localStorage.setItem('hermes-mini-messages', JSON.stringify(messages));
   renderMessages();
-
-  input.value = '';
-  input.style.height = 'auto';
+  input.value = ''; input.style.height = 'auto';
   document.getElementById('sendBtn').disabled = true;
-
-  showTyping();
-  callAI(text);
+  showTyping(); callAI(text);
 }
 
 function sendSuggestion(text) {
@@ -298,17 +281,12 @@ function sendSuggestion(text) {
 function showTyping() {
   const el = document.getElementById('messages');
   const typing = document.createElement('div');
-  typing.className = 'typing';
-  typing.id = 'typing';
+  typing.className = 'typing'; typing.id = 'typing';
   typing.innerHTML = '<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>';
-  el.appendChild(typing);
-  el.scrollTop = el.scrollHeight;
+  el.appendChild(typing); el.scrollTop = el.scrollHeight;
 }
 
-function hideTyping() {
-  const t = document.getElementById('typing');
-  if (t) t.remove();
-}
+function hideTyping() { const t = document.getElementById('typing'); if (t) t.remove(); }
 
 async function callAI(userText) {
   const model = settings.model === 'custom' ? settings.customModel : settings.model;
@@ -316,29 +294,20 @@ async function callAI(userText) {
     { role: 'system', content: settings.systemPrompt },
     ...messages.slice(-20).map(m => ({ role: m.role, content: m.content }))
   ];
-
   try {
     const res = await fetch(settings.apiUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${settings.apiKey}` },
       body: JSON.stringify({ model, messages: apiMessages, max_tokens: 2048, temperature: 0.7 }),
     });
-
-    if (!res.ok) {
-      const err = await res.text();
-      throw new Error(`خطای ${res.status}`);
-    }
-
+    if (!res.ok) throw new Error(`خطای ${res.status}`);
     const data = await res.json();
     const reply = data.choices?.[0]?.message?.content || 'جوابی دریافت نشد 🤔';
-
     hideTyping();
     messages.push({ role: 'bot', content: reply, time: getNow() });
     localStorage.setItem('hermes-mini-messages', JSON.stringify(messages));
     renderMessages();
-
     if (tg) tg.HapticFeedback.notificationOccurred('success');
-
   } catch (err) {
     hideTyping();
     messages.push({ role: 'bot', content: `❌ خطا: ${err.message}`, time: getNow() });
@@ -348,19 +317,11 @@ async function callAI(userText) {
 
 function clearChat() {
   if (messages.length === 0) return;
-  messages = [];
-  localStorage.removeItem('hermes-mini-messages');
-  renderMessages();
+  messages = []; localStorage.removeItem('hermes-mini-messages'); renderMessages();
 }
 
-function handleKey(e) {
-  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
-}
-
-function autoResize(el) {
-  el.style.height = 'auto';
-  el.style.height = Math.min(el.scrollHeight, 100) + 'px';
-}
+function handleKey(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } }
+function autoResize(el) { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 100) + 'px'; }
 </script>
 </body>
 </html>
